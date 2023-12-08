@@ -1,7 +1,7 @@
 from app import app
 from flask import jsonify, request
-from config.db import *
 from config.authenticate import *
+from config.db import *
 
 @app.route('/usuarios', methods=['GET'])
 @jwt_required

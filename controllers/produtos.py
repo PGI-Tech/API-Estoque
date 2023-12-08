@@ -1,6 +1,7 @@
-import os
+"""import os
 from app import app
 from flask import Flask, jsonify, request, url_for, redirect
+from config.authenticate import jwt_required
 from config.db import *
 from config.authenticate import *
 import qrcode
@@ -147,4 +148,4 @@ def code(current_user, id):
         except Exception as e:
             return jsonify({
                 "error":str(e)
-            })
+            })"""
