@@ -58,7 +58,7 @@ def newCategoria(current_user):
             db.commit()
 
             return jsonify({"message": "Nova categoria criada com sucesso!",
-                            "permissao": categoria_share_schema.dump(db.query(Categoria).filter_by(categoria = categoria).first())})
+                            "categoria": categoria_share_schema.dump(db.query(Categoria).filter_by(categoria = categoria).first())})
 
     except Exception as e:
         return str(e), 500
