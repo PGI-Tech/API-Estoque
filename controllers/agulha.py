@@ -105,3 +105,48 @@ def newAgulha():
 
     except Exception as e:
         return str(e), 500
+    
+
+@app.route('/agulha/<int:id>', methods=['PUT'])
+@jwt_required
+def editAgulha(current_user, id):
+    try:
+        if request.method == 'PUT':
+            agulhas = db.query(Agulha).filter_by(id_agulha=id).first()
+            if agulhas == None:
+                return jsonify({"error": "O ID informado não consta na tabela de agulha!"})
+
+            agulha = jsonify(agulha_share_schema.dump(agulhas))
+            if agulha == []:
+                return jsonify({"error": "O ID informado não consta na tabela de agulha!"})
+
+            db.query(Agulha).filter_by(
+                id_agulha=id).update(request.json)
+            db.commit()
+
+            return jsonify(agulha_share_schema.dump(db.query(Agulha).filter_by(id_agulha=id)))
+
+    except Exception as e:
+        return str(e), 500
+
+
+@app.route('/agulha/<int:id>', methods=['DELETE'])
+@jwt_required
+def deleteAgulha(current_user, id):
+    try:
+        if request.method == 'DELETE':
+            agulhas = db.query(Agulha).filter_by(id_agulha=id).first()
+            if agulhas == None:
+                return jsonify({"error": "O ID informado não consta na tabela de agulha!"})
+
+            agulha = jsonify(agulha_share_schema.dump(agulhas))
+            if agulha == []:
+                return jsonify({"error": "O ID informado não consta na tabela de agulha!"})
+
+            db.query(Agulha).filter_by(id_agulha=id).delete()
+            db.commit()
+
+            return jsonify({"message": f"Agulha de ID {id} deletada com sucesso!"})
+
+    except Exception as e:
+        return str(e), 500

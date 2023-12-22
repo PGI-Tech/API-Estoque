@@ -5,8 +5,7 @@ from config.authenticate import *
 
 
 @app.route('/permissao', methods=['GET'])
-@jwt_required
-def permissao(current_user):
+def permissao():
     try:
         if request.method == 'GET':
             permissoes = db.query(Permissao).all()

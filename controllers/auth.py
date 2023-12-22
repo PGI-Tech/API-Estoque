@@ -1,3 +1,4 @@
+from flask_cors import cross_origin
 from app import app
 from flask import Flask, jsonify, request
 from config.db import *
@@ -5,6 +6,7 @@ import datetime
 import jwt
 
 @app.route('/auth', methods=['POST'])
+#@cross_origin()
 def auth():
     # capturar o username inserido pelo usuário
     username = request.json['username']

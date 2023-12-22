@@ -1,7 +1,7 @@
 from app import app
 from flask import jsonify, request
-from config.db import *
 from config.authenticate import *
+from config.db import *
 
 @app.route('/usuarios', methods=['GET'])
 @jwt_required
@@ -42,8 +42,8 @@ def usuarioID(current_user, id):
 
 
 @app.route('/usuarios', methods=['POST'])
-@jwt_required
-def newUsuario(current_user):
+#@jwt_required
+def newUsuario():
     try: 
         if request.method == 'POST':
             username = request.json['username']
