@@ -42,8 +42,8 @@ def usuarioID(current_user, id):
 
 
 @app.route('/usuarios', methods=['POST'])
-@jwt_required
-def newUsuario(current_user):
+#@jwt_required
+def newUsuario():
     try: 
         if request.method == 'POST':
             username = request.json['username']
