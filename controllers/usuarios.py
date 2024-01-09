@@ -2,6 +2,7 @@ from app import app
 from flask import jsonify, request
 from config.authenticate import *
 from config.db import *
+import math
 
 @app.route('/usuarios', methods=['GET'])
 @jwt_required
@@ -37,6 +38,31 @@ def usuarioID(current_user, id):
             
             return users
 
+    except Exception as e:
+        return str(e), 500
+
+
+@app.route('/usuarios/<int:itens>/<int:page>', methods=['GET'])
+@jwt_required
+def usuarioPagination(current_user, itens, page):
+    try:
+        if request.method == 'GET':
+            skip = (page - 1) * itens
+            totalUsers = db.query(Usuario).count()
+            usuarios = db.query(Usuario).limit(itens).offset(skip).all()
+            if (usuarios == None) or (len(usuarios) == 0):
+                return jsonify({"error": "Não há nenhum dado cadastrado nessa tabela"})
+
+            users = users_share_schema.dump(usuarios)
+            if users == []:
+                return jsonify({"error": "Não há nenhum dado cadastrado nessa tabela"})
+    
+            return jsonify({
+                    "totalUsers":totalUsers,
+                    "itens":itens,
+                    "totalPages": math.ceil(totalUsers/itens),
+                    "data": users})
+    
     except Exception as e:
         return str(e), 500
 

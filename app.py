@@ -27,4 +27,4 @@ from controllers.agulha import *
 from controllers.categoria import *
 
 if __name__ == "__main__":
-    app.run(port=5000, host='0.0.0.0')
+    app.run(port=266, host='0.0.0.0')

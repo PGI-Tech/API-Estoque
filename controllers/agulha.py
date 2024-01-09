@@ -39,6 +39,31 @@ def agulhaID(current_user, id):
 
     except Exception as e:
         return str(e), 500
+    
+
+@app.route('/agulha/<int:itens>/<int:page>', methods=['GET'])
+@jwt_required
+def agulhaPagination(current_user, itens, page):
+    try:
+        if request.method == 'GET':
+            skip = (page - 1) * itens
+            totalAgulhas = db.query(Agulha).count()
+            agulhas = db.query(Agulha).limit(itens).offset(skip).all()
+            if (agulhas == None) or (len(agulhas) == 0):
+                return jsonify({"error": "Não há nenhum dado cadastrado nessa tabela"})
+
+            agulha = agulhas_share_schema.dump(agulhas)
+            if agulha == []:
+                return jsonify({"error": "Não há nenhum dado cadastrado nessa tabela"})
+    
+            return jsonify({
+                    "totalAgulhas":totalAgulhas,
+                    "itens":itens,
+                    "totalPages": math.ceil(totalAgulhas/itens),
+                    "data": agulha})
+    
+    except Exception as e:
+        return str(e), 500
 
 
 @app.route('/agulha', methods=['POST'])
