@@ -204,7 +204,7 @@ class ComposicaoSchema(ma.Schema):
         fields = ('id_composicao', 'composicao') 
     
 composicao_share_schema = ComposicaoSchema()
-composicaos_share_schema = ComposicaoSchema(many=True)
+composicoes_share_schema = ComposicaoSchema(many=True)
 
 
 
