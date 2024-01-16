@@ -19,12 +19,21 @@ db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 ma = Marshmallow(app)
 
-from controllers.permissoes import *
-from controllers.usuarios import *
-from controllers.produtos import *
-from controllers.auth import *
 from controllers.agulha import *
+from controllers.auth import *
 from controllers.categoria import *
+from controllers.classe import *
+from controllers.composicao import *
+from controllers.especieAgulha import *
+from controllers.maquinaAgulha import *
+from controllers.marcaAgulha import *
+from controllers.marcaElastico import *
+from controllers.permissoes import *
+from controllers.produtos import *
+from controllers.tipoElastico import *
+from controllers.tipoLinha import *
+from controllers.unidade import *
+from controllers.usuarios import *
 
 if __name__ == "__main__":
     app.run(port=266, host='0.0.0.0')
