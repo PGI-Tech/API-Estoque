@@ -6,7 +6,7 @@ from config.authenticate import *
 
 @app.route('/marca_agulha', methods=['GET'])
 @jwt_required
-def MaquinaAgulha(current_user):
+def MarcaAgulha(current_user):
     try:
         if request.method == 'GET':
             marca_agulhas = db.query(Marca_Agulha).all()
@@ -64,46 +64,46 @@ def NewMarcaAgulha(current_user):
         return str(e), 500
 
 
-@app.route('/maquina_agulha/<int:id>', methods=['PUT'])
+@app.route('/marca_agulha/<int:id>', methods=['PUT'])
 @jwt_required
-def editmaquina_agulha(current_user, id):
+def editmarca_agulha(current_user, id):
     try:
         if request.method == 'PUT':
-            maquina_agulhas = db.query(Maquina_Agulha).filter_by(id_maquina_agulha=id).first()
-            if maquina_agulhas == None:
-                return jsonify({"error": "O ID informado não consta na tabela de maquina_agulha!"})
+            marca_agulhas = db.query(Marca_Agulha).filter_by(id_marca_agulha=id).first()
+            if marca_agulhas == None:
+                return jsonify({"error": "O ID informado não consta na tabela de marca_agulhas!"})
 
-            maquina_agulha = jsonify(maquina_agulha_share_schema.dump(maquina_agulhas))
-            if maquina_agulha == []:
-                return jsonify({"error": "O ID informado não consta na tabela de maquina_agulha!"})
+            marca_agulha = jsonify(marca_agulha_share_schema.dump(marca_agulhas))
+            if marca_agulha == []:
+                return jsonify({"error": "O ID informado não consta na tabela de marca_agulhas!"})
 
-            db.query(maquina_agulha).filter_by(
-                id_maquina_agulha=id).update(request.json)
+            db.query(marca_agulha).filter_by(
+                id_marca_agulha=id).update(request.json)
             db.commit()
 
-            return jsonify(maquina_agulha_share_schema.dump(db.query(maquina_agulha).filter_by(id_maquina_agulha=id)))
+            return jsonify(marca_agulha_share_schema.dump(db.query(marca_agulha).filter_by(id_marca_agulha=id)))
 
     except Exception as e:
         return str(e), 500
 
 
-@app.route('/maquina_agulha/<int:id>', methods=['DELETE'])
+@app.route('/marca_agulha/<int:id>', methods=['DELETE'])
 @jwt_required
-def deletemaquina_agulha(current_user, id):
+def deletemarca_agulha(current_user, id):
     try:
         if request.method == 'DELETE':
-            maquina_agulhas = db.query(Maquina_Agulha).filter_by(id_maquina_agulha=id).first()
-            if maquina_agulhas == None:
-                return jsonify({"error": "O ID informado não consta na tabela de maquina_agulha!"})
+            marca_agulhas = db.query(Marca_Agulha).filter_by(id_marca_agulha=id).first()
+            if marca_agulhas == None:
+                return jsonify({"error": "O ID informado não consta na tabela de marca_agulha!"})
 
-            maquina_agulha = jsonify(maquina_agulha_share_schema.dump(maquina_agulhas))
-            if maquina_agulha == []:
-                return jsonify({"error": "O ID informado não consta na tabela de maquina_agulha!"})
+            marca_agulha = jsonify(marca_agulha_share_schema.dump(marca_agulhas))
+            if marca_agulha == []:
+                return jsonify({"error": "O ID informado não consta na tabela de marca_agulhas!"})
 
-            db.query(Maquina_Agulha).filter_by(id_maquina_agulha=id).delete()
+            db.query(Marca_Agulha).filter_by(id_marca_agulha=id).delete()
             db.commit()
 
-            return jsonify({"message": f"maquina_agulha de ID {id} deletada com sucesso!"})
+            return jsonify({"message": f"marca_agulha de ID {id} deletada com sucesso!"})
 
     except Exception as e:
         return str(e), 500
