@@ -50,15 +50,15 @@ def NewMaquinaAgulha(current_user):
             maquina_agulha = request.json['maquina_agulha']
 
             # Cria uma nova instância do modelo maquina_agulha com os dados
-            newmaquina_agulha = maquina_agulha(
-                maquina_agulha = maquina_agulha
+            newmaquina_agulha = Maquina_Agulha(
+                maquina = maquina_agulha
             )
 
             db.add(newmaquina_agulha)
             db.commit()
 
             return jsonify({"message": "Nova maquina_agulha criada com sucesso!",
-                            "maquina_agulha": maquina_agulha_share_schema.dump(db.query(Maquina_Agulha).filter_by(maquina_agulha = maquina_agulha).first())})
+                            "maquina_agulha": maquina_agulha_share_schema.dump(db.query(Maquina_Agulha).filter_by(maquina = maquina_agulha).first())})
 
     except Exception as e:
         return str(e), 500
