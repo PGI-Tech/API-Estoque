@@ -17,6 +17,9 @@ class Classe(Base):
     agulha = relationship("Agulha", back_populates="classe")
     linha = relationship("Linha", back_populates="classe")
     tecido = relationship("Tecido", back_populates="classe")
+    movel = relationship("Movel", back_populates="classe")
+    insumo = relationship("Insumo", back_populates="classe")
+    maquina = relationship("Maquina", back_populates="classe")
 
 class ClasseSchema(ma.Schema):
     class Meta:
@@ -38,6 +41,9 @@ class Categoria(Base):
     elastico = relationship("Elastico", back_populates="categoria")
     linha = relationship("Linha", back_populates="categoria")
     tecido = relationship("Tecido", back_populates="categoria")
+    movel = relationship("Movel", back_populates="categoria")
+    insumo = relationship("Insumo", back_populates="categoria")
+    maquina = relationship("Maquina", back_populates="categoria")
 
 class CategoriaSchema(ma.Schema):
     class Meta:
@@ -99,6 +105,60 @@ class MarcaAgulhaSchema(ma.Schema):
     
 marca_agulha_share_schema = MarcaAgulhaSchema()
 marca_agulhas_share_schema = MarcaAgulhaSchema(many=True)
+
+
+
+# Marca Movel
+class Marca_Movel(Base):
+    __tablename__ = 'marca_movel'
+
+    id_marca_movel = Column(Integer, primary_key=True, index=True, autoincrement=True)  
+    marca = Column(String(length=80), index=True)
+
+    movel = relationship("Movel", back_populates="marca_movel")
+
+class MarcaMovelSchema(ma.Schema):
+    class Meta:
+        fields = ('id_marca_movel', 'marca') 
+    
+marca_movel_share_schema = MarcaMovelSchema()
+marca_moveis_share_schema = MarcaMovelSchema(many=True)
+
+
+
+# Marca Insumo
+class Marca_Insumo(Base):
+    __tablename__ = 'marca_insumo'
+
+    id_marca_insumo = Column(Integer, primary_key=True, index=True, autoincrement=True)  
+    insumo = Column(String(length=80), index=True)
+
+    insumo = relationship("Insumo", back_populates="marca_insumo")
+
+class MarcaInsumoSchema(ma.Schema):
+    class Meta:
+        fields = ('id_marca_insumo', 'insumo') 
+    
+marca_insumo_share_schema = MarcaInsumoSchema()
+marca_insumos_share_schema = MarcaInsumoSchema(many=True)
+
+
+
+# Marca Maquina
+class Marca_Maquina(Base):
+    __tablename__ = 'marca_maquina'
+
+    id_marca_maquina = Column(Integer, primary_key=True, index=True, autoincrement=True)  
+    maquina = Column(String(length=80), index=True)
+
+    maquina = relationship("Maquina", back_populates="marca_insumo")
+
+class MarcaMaquinaSchema(ma.Schema):
+    class Meta:
+        fields = ('id_marca_maquina', 'maquina') 
+    
+marca_maquina_share_schema = MarcaMaquinaSchema()
+marca_maquinas_share_schema = MarcaMaquinaSchema(many=True)
 
 
 
@@ -188,6 +248,60 @@ tipo_elasticos_share_schema = TipoElasticoSchema(many=True)
 
 
 
+# Tipo Insumo
+class Tipo_Insumo(Base):
+    __tablename__ = 'tipo_insumo'
+
+    id_tipo_insumo = Column(Integer, primary_key=True, index=True, autoincrement=True)  
+    tipo = Column(String(length=80), index=True)
+
+    insumo = relationship("Insumo", back_populates="tipo_insumo")
+
+class TipoInsumoSchema(ma.Schema):
+    class Meta:
+        fields = ('id_tipo_insumo', 'tipo') 
+    
+tipo_insumo_share_schema = TipoInsumoSchema()
+tipo_insumos_share_schema = TipoInsumoSchema(many=True)
+
+
+
+# Tipo Maquina
+class Tipo_Maquina(Base):
+    __tablename__ = 'tipo_maquina'
+
+    id_tipo_maquina = Column(Integer, primary_key=True, index=True, autoincrement=True)  
+    tipo = Column(String(length=80), index=True)
+
+    maquina = relationship("Maquina", back_populates="tipo_maquina")
+
+class TipoMaquinaSchema(ma.Schema):
+    class Meta:
+        fields = ('id_tipo_maquina', 'tipo') 
+    
+tipo_maquina_share_schema = TipoMaquinaSchema()
+tipo_maquinas_share_schema = TipoMaquinaSchema(many=True)
+
+
+
+# Tipo Movel
+class Tipo_Movel(Base):
+    __tablename__ = 'tipo_movel'
+
+    id_tipo_movel = Column(Integer, primary_key=True, index=True, autoincrement=True)  
+    tipo = Column(String(length=80), index=True)
+
+    movel = relationship("Movel", back_populates="tipo_movel")
+
+class TipoMovelSchema(ma.Schema):
+    class Meta:
+        fields = ('id_tipo_movel', 'tipo') 
+    
+tipo_movel_share_schema = TipoMovelSchema()
+tipo_moveis_share_schema = TipoMovelSchema(many=True)
+
+
+
 # Composicao 
 class Composicao(Base):
     __tablename__ = 'composicao'
@@ -198,6 +312,9 @@ class Composicao(Base):
     elastico = relationship("Elastico", back_populates="composicao")
     linha = relationship("Linha", back_populates="composicao")
     tecido = relationship("Tecido", back_populates="composicao")
+    movel = relationship("Movel", back_populates="composicao")
+    insumo = relationship("Insumo", back_populates="composicao")
+    maquina = relationship("Maquina", back_populates="composicao")
 
 class ComposicaoSchema(ma.Schema):
     class Meta:
@@ -451,6 +568,129 @@ class AgulhaSchema(ma.Schema):
     
 agulha_share_schema = AgulhaSchema()
 agulhas_share_schema = AgulhaSchema(many=True)
+
+
+
+# Moveis
+class Movel(Base):
+    __tablename__ = 'movel'
+
+    id_movel = Column(Integer, primary_key=True, index=True, autoincrement=True) 
+    id_classe = Column(Integer, ForeignKey('classe.id_classe')) # sub tabela / lista suspensa / foreign-key
+    id_categoria = Column(Integer, ForeignKey('categoria.id_categoria')) # sub tabela / lista suspensa / foreign-key
+    id_tipo_movel = Column(String(length=80), ForeignKey('tipo_movel.id_tipo_movel'))
+    id_composicao = Column(Integer, ForeignKey('composicao.id_composicao')) # sub tabela / lista suspensa / foreign-key
+    fornecedor = Column(String(length=80), index=True)
+    id_marca_movel = Column(String(length=80), ForeignKey('marca_movel.id_marca_movel'))
+    cor = Column(String(length=80), index=True)
+    estoque_cx = Column(Integer, index=True)
+    valor = Column(Integer, index=True)
+    imposto = Column(Integer, index=True)
+    preco_final = Column(Integer, index=True)
+    valor_estoque_total = Column(Integer, index=True)
+    aplicacao = Column(String(length=100), index=True)
+    obs = Column(String(length=100), index=True)
+    estoque_minimo_cx = Column(Integer, index=True)
+    em_falta = Column(String(length=3), index=True)
+    data_compra = Column(Date, index=True)
+
+    classe = relationship("Classe", back_populates="movel")
+    categoria = relationship("Categoria", back_populates="movel")
+    composicao = relationship("Composicao", back_populates="movel")
+    tipo_movel = relationship("Tipo_Movel", back_populates="movel")
+    marca_movel = relationship("Marca_Movel", back_populates="movel")
+
+class MovelSchema(ma.Schema):
+    class Meta:
+        fields = ('id_movel', 'classe', 'categoria','tipo', 'composicao', 'fornecedor', 'marca', 'cor', 'estoque', 'valor', 'imposto', 'preco_final', 'valor_estoque_total', 'aplicacao', 'obs', 'estoque_minimo', 'em_falta', 'data_compra') 
+    
+movel_share_schema = MovelSchema()
+moveis_share_schema = MovelSchema(many=True)
+
+
+
+# Insumo
+class Insumo(Base):
+    __tablename__ = 'insumo'
+
+    id_insumo = Column(Integer, primary_key=True, index=True, autoincrement=True) 
+    id_classe = Column(Integer, ForeignKey('classe.id_classe')) # sub tabela / lista suspensa / foreign-key
+    id_categoria = Column(Integer, ForeignKey('categoria.id_categoria')) # sub tabela / lista suspensa / foreign-key
+    id_tipo_insumo = Column(String(length=80), ForeignKey('tipo_insumo.id_tipo_insumo'))
+    id_composicao = Column(Integer, ForeignKey('composicao.id_composicao')) # sub tabela / lista suspensa / foreign-key
+    fornecedor = Column(String(length=80), index=True)
+    id_marca_insumo = Column(String(length=80), ForeignKey('marca_insumo.id_marca_insumo'))
+    cor = Column(String(length=80), index=True)
+    ref = Column(String(length=100), index=True)
+    ref_inter = Column(String(length=100), index=True)
+    qr_code = Column(String(length=200), index=True)
+    tamanho_tam = Column(String(length=80), index=True)
+    quantidade_pecas = Column(Integer, index=True)
+    embalagem = Column(String(length=80), index=True)
+    estoque = Column(String(length=80), index=True)
+    valor = Column(Integer, index=True)
+    imposto = Column(Integer, index=True)
+    preco_final = Column(Integer, index=True)
+    valor_estoque_total = Column(Integer, index=True)
+    aplicacao = Column(String(length=100), index=True)
+    obs = Column(String(length=100), index=True)
+    estoque_minimo = Column(String(length=80), index=True)
+    em_falta = Column(String(length=3), index=True)
+    data_compra = Column(Date, index=True)
+
+    classe = relationship("Classe", back_populates="insumo")
+    categoria = relationship("Categoria", back_populates="insumo")
+    composicao = relationship("Composicao", back_populates="insumo")
+    tipo_insumo = relationship("Tipo_Insumo", back_populates="insumo")
+    marca_insumo = relationship("Marca_Insumo", back_populates="insumo")
+
+class InsumoSchema(ma.Schema):
+    class Meta:
+        fields = ('id_insumo', 'classe', 'categoria','tipo', 'composicao', 'fornecedor', 'marca', 'cor','ref', 'ref_inter', 'qr_code', 'tamanho', 'quantidade_pecas', 'embalagem', 'estoque', 'valor', 'imposto', 'preco_final', 'valor_estoque_total', 'aplicacao', 'obs', 'estoque_minimo', 'em_falta', 'data_compra') 
+    
+insumo_share_schema = InsumoSchema()
+insumos_share_schema = InsumoSchema(many=True)
+
+
+
+# Maquina
+class Maquina(Base):
+    __tablename__ = 'maquina'
+
+    id_maquina = Column(Integer, primary_key=True, index=True, autoincrement=True) 
+    id_classe = Column(Integer, ForeignKey('classe.id_classe')) # sub tabela / lista suspensa / foreign-key
+    id_categoria = Column(Integer, ForeignKey('categoria.id_categoria')) # sub tabela / lista suspensa / foreign-key
+    id_tipo_maquina = Column(Integer, ForeignKey('tipo_maquina.id_tipo_maquina'))
+    fornecedor = Column(String(length=80), index=True)
+    id_marca_maquina = Column(Integer, ForeignKey('marca_maquina.id_marca_maquina'))
+    cor = Column(String(length=80), index=True)
+    ref = Column(String(length=100), index=True)
+    ref_inter = Column(String(length=100), index=True)
+    qr_code = Column(String(length=200), index=True)
+    estoque = Column(String(length=80), index=True)
+    valor = Column(Integer, index=True)
+    imposto = Column(Integer, index=True)
+    preco_final = Column(Integer, index=True)
+    valor_estoque_total = Column(Integer, index=True)
+    aplicacao = Column(String(length=100), index=True)
+    obs = Column(String(length=100), index=True)
+    estoque_minimo_cx = Column(Integer, index=True)
+    em_falta = Column(String(length=3), index=True)
+    data_compra = Column(Date, index=True)
+
+    classe = relationship("Classe", back_populates="maquina")
+    categoria = relationship("Categoria", back_populates="maquina")
+    composicao = relationship("Composicao", back_populates="maquina")
+    tipo_maquina = relationship("Tipo_Maquina", back_populates="maquina")
+    marca_maquina = relationship("Marca_Maquina", back_populates="maquina")
+
+class MaquinaSchema(ma.Schema):
+    class Meta:
+        fields = ('id_movel', 'classe', 'categoria','tipo', 'composicao', 'fornecedor', 'marca', 'cor', 'estoque', 'valor', 'imposto', 'preco_final', 'valor_estoque_total', 'aplicacao', 'obs', 'estoque_minimo', 'em_falta', 'data_compra') 
+    
+maquina_share_schema = MaquinaSchema()
+maquinas_share_schema = MaquinaSchema(many=True)
+
 
 
 # Configurar o banco de dados

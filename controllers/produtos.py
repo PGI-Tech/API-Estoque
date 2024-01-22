@@ -1,4 +1,4 @@
-"""import os
+import os
 from app import app
 from flask import Flask, jsonify, request, url_for, redirect
 from config.authenticate import jwt_required
@@ -14,14 +14,39 @@ from PIL import Image
 def produto(current_user):
     try:
         if request.method == 'GET':
-            produtos = db.query(Produto).all()
-            if (produtos == None) or (len(produtos) == 0):
+            agulhas = db.query(Agulha).all()
+            if (agulhas == None) or (len(agulhas) == 0):
                 return jsonify({"error": "Não há nenhum dado cadastrado nessa tabela"})
 
-            prod = jsonify(produtos_share_schema.dump(produtos))
-            if prod == []:
+            agulha = jsonify(agulhas_share_schema.dump(agulhas))
+            if agulha == []:
                 return jsonify({"error": "Não há nenhum dado cadastrado nessa tabela"})
-            return prod
+
+            return agulha
+
+    except Exception as e:
+        return str(e), 500 
+
+@app.route('/produtos/<int:itens>/<int:page>', methods=['GET'])
+@jwt_required
+def produtoPagination(current_user, itens, page):
+    try:
+        if request.method == 'GET':
+            skip = (page - 1) * itens
+            totalAgulhas = db.query(Agulha).count()
+            agulhas = db.query(Agulha).limit(itens).offset(skip).all()
+            if (agulhas == None) or (len(agulhas) == 0):
+                return jsonify({"error": "Não há nenhum dado cadastrado nessa tabela"})
+
+            agulha = agulhas_share_schema.dump(agulhas)
+            if agulha == []:
+                return jsonify({"error": "Não há nenhum dado cadastrado nessa tabela"})
+    
+            return jsonify({
+                    "totalAgulhas":totalAgulhas,
+                    "itens":itens,
+                    "totalPages": math.ceil(totalAgulhas/itens),
+                    "data": agulha})
     
     except Exception as e:
         return str(e), 500
@@ -30,93 +55,25 @@ def produto(current_user):
 @app.route('/produtos/<int:id>', methods=['GET'])
 @jwt_required
 def produtoID(current_user, id):
-    try:
-        if request.method == 'GET':
-            produtos = db.query(Produto).filter_by(id_produto=id).first()
-            if produtos == None:
-                return jsonify({"error":"O ID informado não consta na tabela de Produtos!"})
-            
-            prod = jsonify(produto_share_schema.dump(produtos))
-            if prod == []:
-                return jsonify({"error":"O ID informado não consta na tabela de Produtos!"})
-            
-            return prod
-
-    except Exception as e:
-        return str(e), 500
+    return
 
 
 @app.route('/produtos', methods=['POST'])
 @jwt_required
 def newProduto(current_user):
-    try: 
-        if request.method == 'POST':
-            descricao = request.json['descricao']
-            quantidade = request.json['quantidade']
-            publico = request.json['publico']
-            materia_prima = request.json['materia_prima']
-
-            # Cria uma nova instância do modelo Produto com os dados
-            newProd = Produto(
-                descricao = descricao,
-                quantidade = quantidade,
-                publico = publico,
-                materia_prima = materia_prima
-            )
-
-            db.add(newProd)
-            db.commit()
-
-            return jsonify({"message": "Novo produto criado com sucesso!",
-                            "produto": produto_share_schema.dump(db.query(Produto).filter_by(descricao = descricao).first())})
-    
-    except Exception as e:
-        return str(e), 500
+    return
 
 
 @app.route('/produtos/<int:id>', methods=['PUT'])
 @jwt_required
 def editProduto(current_user, id):
-    try:
-       if request.method == 'PUT':
-            produtos = db.query(Produto).filter_by(id_produto=id).first()
-            if produtos == None:
-                return jsonify({"error":"O ID informado não consta na tabela de Produtos!"})
-
-            prod = jsonify(produto_share_schema.dump(produtos))
-            if prod == []:
-                return jsonify({"error":"O ID informado não consta na tabela de Produtos!"})
-
-            db.query(Produto).filter_by(
-                id_produto=id).update(request.json)
-            db.commit()
-
-            return jsonify(produto_share_schema.dump(db.query(Produto).filter_by(id_produto=id).first()))
-
-    except Exception as e:
-        return str(e), 500
+    return
 
 
 @app.route('/produtos/<int:id>', methods=['DELETE'])
 @jwt_required
 def deleteProduto(current_user, id):
-    try:
-        if request.method == 'DELETE':
-            produtos = db.query(Produto).filter_by(id_produto=id).first()
-            if produtos == None:
-                return jsonify({"error":"O ID informado não consta na tabela de Produtos!"})
-
-            prod = jsonify(produto_share_schema.dump(produtos))
-            if prod == []:
-                return jsonify({"error":"O ID informado não consta na tabela de Produtos!"})
-
-            db.query(Produto).filter_by(id_produto=id).delete()
-            db.commit()
-
-            return jsonify({"message": f"Produto de ID {id} deletado com sucesso!"})
-
-    except Exception as e:
-        return str(e), 500
+    return
     
 @app.route('/produtos/qrcode/<int:id>', methods=['GET'])
 @jwt_required
@@ -148,4 +105,4 @@ def code(current_user, id):
         except Exception as e:
             return jsonify({
                 "error":str(e)
-            })"""
+            })
