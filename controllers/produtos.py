@@ -27,14 +27,25 @@ def produto(current_user):
     except Exception as e:
         return str(e), 500 
 
-@app.route('/produtos/<int:itens>/<int:page>', methods=['GET'])
+@app.route('/produtos//<int:page>', methods=['GET'])
 @jwt_required
-def produtoPagination(current_user, itens, page):
+def produtoPagination(current_user, page):
     try:
         if request.method == 'GET':
-            skip = (page - 1) * itens
+            skip = (page - 1) * 5
+            #Agulhas
             totalAgulhas = db.query(Agulha).count()
-            agulhas = db.query(Agulha).limit(itens).offset(skip).all()
+            agulhas = db.query(Agulha).limit(5).offset(skip).all()
+            if (agulhas == None) or (len(agulhas) == 0):
+                return jsonify({"error": "Não há nenhum dado cadastrado nessa tabela"})
+
+            agulha = agulhas_share_schema.dump(agulhas)
+            if agulha == []:
+                return jsonify({"error": "Não há nenhum dado cadastrado nessa tabela"})
+            
+            #Agulhas
+            totalAgulhas = db.query(Agulha).count()
+            agulhas = db.query(Agulha).limit(5).offset(skip).all()
             if (agulhas == None) or (len(agulhas) == 0):
                 return jsonify({"error": "Não há nenhum dado cadastrado nessa tabela"})
 
@@ -44,8 +55,8 @@ def produtoPagination(current_user, itens, page):
     
             return jsonify({
                     "totalAgulhas":totalAgulhas,
-                    "itens":itens,
-                    "totalPages": math.ceil(totalAgulhas/itens),
+                    "itens":5,
+                    "totalPages": math.ceil(totalAgulhas/5),
                     "data": agulha})
     
     except Exception as e:
@@ -56,25 +67,8 @@ def produtoPagination(current_user, itens, page):
 @jwt_required
 def produtoID(current_user, id):
     return
-
-
-@app.route('/produtos', methods=['POST'])
-@jwt_required
-def newProduto(current_user):
-    return
-
-
-@app.route('/produtos/<int:id>', methods=['PUT'])
-@jwt_required
-def editProduto(current_user, id):
-    return
-
-
-@app.route('/produtos/<int:id>', methods=['DELETE'])
-@jwt_required
-def deleteProduto(current_user, id):
-    return
     
+
 @app.route('/produtos/qrcode/<int:id>', methods=['GET'])
 @jwt_required
 def code(current_user, id):
