@@ -8,7 +8,7 @@ if defined _OLD_CODEPAGE (
     "%SystemRoot%\System32\chcp.com" 65001 > nul
 )
 
-set VIRTUAL_ENV=C:\Users\55519\Documents\Projetos\Estoque\main
+set VIRTUAL_ENV=C:\Users\igdou\Documents\Visual_Studio_Code\Projetos\API-Estoque\main
 
 if not defined PROMPT set PROMPT=$P$G
 
