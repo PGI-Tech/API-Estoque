@@ -578,10 +578,10 @@ class Movel(Base):
     id_movel = Column(Integer, primary_key=True, index=True, autoincrement=True) 
     id_classe = Column(Integer, ForeignKey('classe.id_classe')) # sub tabela / lista suspensa / foreign-key
     id_categoria = Column(Integer, ForeignKey('categoria.id_categoria')) # sub tabela / lista suspensa / foreign-key
-    id_tipo_movel = Column(String(length=80), ForeignKey('tipo_movel.id_tipo_movel'))
+    id_tipo_movel = Column(Integer, ForeignKey('tipo_movel.id_tipo_movel'))
     id_composicao = Column(Integer, ForeignKey('composicao.id_composicao')) # sub tabela / lista suspensa / foreign-key
     fornecedor = Column(String(length=80), index=True)
-    id_marca_movel = Column(String(length=80), ForeignKey('marca_movel.id_marca_movel'))
+    id_marca_movel = Column(Integer, ForeignKey('marca_movel.id_marca_movel'))
     cor = Column(String(length=80), index=True)
     estoque_cx = Column(Integer, index=True)
     valor = Column(Integer, index=True)
@@ -616,10 +616,10 @@ class Insumo(Base):
     id_insumo = Column(Integer, primary_key=True, index=True, autoincrement=True) 
     id_classe = Column(Integer, ForeignKey('classe.id_classe')) # sub tabela / lista suspensa / foreign-key
     id_categoria = Column(Integer, ForeignKey('categoria.id_categoria')) # sub tabela / lista suspensa / foreign-key
-    id_tipo_insumo = Column(String(length=80), ForeignKey('tipo_insumo.id_tipo_insumo'))
+    id_tipo_insumo = Column(Integer, ForeignKey('tipo_insumo.id_tipo_insumo'))
     id_composicao = Column(Integer, ForeignKey('composicao.id_composicao')) # sub tabela / lista suspensa / foreign-key
     fornecedor = Column(String(length=80), index=True)
-    id_marca_insumo = Column(String(length=80), ForeignKey('marca_insumo.id_marca_insumo'))
+    id_marca_insumo = Column(Integer, ForeignKey('marca_insumo.id_marca_insumo'))
     cor = Column(String(length=80), index=True)
     ref = Column(String(length=100), index=True)
     ref_inter = Column(String(length=100), index=True)
