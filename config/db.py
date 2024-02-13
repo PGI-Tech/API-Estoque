@@ -151,7 +151,7 @@ class Marca_Maquina(Base):
     id_marca_maquina = Column(Integer, primary_key=True, index=True, autoincrement=True)  
     maquina = Column(String(length=80), index=True)
 
-    maquina = relationship("Maquina", back_populates="marca_insumo")
+    maquina = relationship("Maquina", back_populates="marca_maquina")
 
 class MarcaMaquinaSchema(ma.Schema):
     class Meta:
@@ -314,7 +314,6 @@ class Composicao(Base):
     tecido = relationship("Tecido", back_populates="composicao")
     movel = relationship("Movel", back_populates="composicao")
     insumo = relationship("Insumo", back_populates="composicao")
-    maquina = relationship("Maquina", back_populates="composicao")
 
 class ComposicaoSchema(ma.Schema):
     class Meta:
@@ -420,7 +419,7 @@ class Elastico(Base):
 
 class ElasticoSchema(ma.Schema):
     class Meta:
-        fields = ('id_elastico', 'foto', 'id_categoria', 'id_tipo_elastico', 'nome', 'id_composicao_elastico', 'fornecedor', 'id_marca_elastico', 'cor', 'ref', 'ref_inter', 'qr_code', 'largura', 'embalagem', 'id_unidade', 'estoque', 'valor', 'imposto', 'preco_final', 'valor_estoque_total', 'aplicacao', 'obs', 'estoque_minimo', 'em_falta', 'data_compra')
+        fields = ('id_elastico', 'foto', 'id_categoria', 'id_tipo_elastico', 'nome', 'id_composicao', 'fornecedor', 'id_marca_elastico', 'cor', 'ref', 'ref_inter', 'qr_code', 'largura_mm', 'embalagem_m', 'id_unidade', 'estoque_rolo', 'valor', 'imposto', 'preco_final', 'valor_estoque_total', 'aplicacao', 'obs', 'estoque_minimo_rolo', 'em_falta', 'data_compra')
 
 elastico_share_schema = ElasticoSchema()
 elasticos_share_schema = ElasticoSchema(many=True)
@@ -466,7 +465,7 @@ class Linha(Base):
 
 class LinhaSchema(ma.Schema):
     class Meta:
-        fields = ('id_linha', 'foto', 'id_categoria', 'id_classe', 'id_tipo_linha', 'id_composicao', 'fornecedor', 'id_marca_linha', 'cor', 'ref', 'num_pedido', 'qr_code', 'tamanho', 'quantidade_pecas', 'id_unidade', 'estoque', 'valor', 'imposto', 'preco_final', 'valor_estoque_total', 'obs', 'estoque_minimo', 'em_falta', 'data_compra')
+        fields = ('id_linha', 'foto', 'id_categoria', 'id_classe', 'id_tipo_linha', 'id_composicao', 'fornecedor', 'marca_linha', 'cor', 'ref', 'num_pedido', 'qr_code', 'tamanho_jardas', 'quantidade_pecas_cone', 'id_unidade', 'id_embalagem', 'estoque_cone', 'valor', 'imposto', 'preco_final', 'valor_estoque_total', 'obs', 'estoque_minimo_cone', 'em_falta', 'data_compra')
 
 linha_share_schema = ElasticoSchema()
 linhas_share_schema = ElasticoSchema(many=True)
@@ -520,7 +519,7 @@ class Tecido(Base):
 
 class TecidoSchema(ma.Schema):
     class Meta:
-        fields = ('id_tecido', 'foto', 'id_categoria', 'id_classe', 'tipo_tecido', 'id_composicao', 'fornecedor', 'marca_linha', 'importado', 'estampado', 'cor', 'estampa', 'ref', 'num_pedido', 'qr_code', 'ramado', 'plano', 'largura', 'gramatura', 'id_unidade', 'rendimento', 'tamanho', 'qantidade_peca', 'id_embalagem', 'estoque', 'valor', 'imposto', 'preco_final', 'valor_estoque_total', 'aplicacao', 'obs', 'estoque_minimo', 'em_falta', 'data_compra')
+        fields = ('id_tecido', 'foto', 'id_categoria', 'id_classe', 'tipo_tecido', 'id_composicao', 'fornecedor', 'marca_linha', 'importado', 'estampado', 'cor', 'estampa', 'ref', 'num_pedido', 'qr_code', 'ramado', 'plano', 'largura_m', 'gramatura_gm2', 'id_unidade', 'rendimento_mkg', 'tamanho_kg', 'qantidade_peca', 'id_embalagem', 'estoque_kg', 'valor', 'imposto', 'preco_final', 'valor_estoque_total', 'aplicacao', 'obs', 'estoque_minimo_kg', 'em_falta', 'data_compra')
 
 tecido_share_schema = TecidoSchema()
 tecidos_share_schema = TecidoSchema(many=True)
@@ -564,7 +563,7 @@ class Agulha(Base):
 
 class AgulhaSchema(ma.Schema):
     class Meta:
-        fields = ('id_agulha', 'classe', 'foto', 'categoria', 'maquina', 'especie', 'fornecedor', 'id_marca', 'ref', 'num_pedido', 'qr_code', 'tamanho', 'estoque', 'und', 'valor', 'imposto', 'preco_final', 'valor_estoque_total', 'aplicacao', 'obs', 'estoque_minimo', 'em_falta', 'data_compra') 
+        fields = ('id_agulha', 'id_classe', 'foto', 'id_categoria', 'id_maquina_agulha', 'id_especie_agulha', 'fornecedor', 'id_marca_agulha', 'ref', 'num_pedido', 'qr_code', 'tamanho_tam', 'estoque_cx', 'id_unidade', 'valor', 'imposto', 'preco_final', 'valor_estoque_total', 'aplicacao', 'obs', 'estoque_minimo_cx', 'em_falta', 'data_compra') 
     
 agulha_share_schema = AgulhaSchema()
 agulhas_share_schema = AgulhaSchema(many=True)
@@ -602,7 +601,7 @@ class Movel(Base):
 
 class MovelSchema(ma.Schema):
     class Meta:
-        fields = ('id_movel', 'classe', 'categoria','tipo', 'composicao', 'fornecedor', 'marca', 'cor', 'estoque', 'valor', 'imposto', 'preco_final', 'valor_estoque_total', 'aplicacao', 'obs', 'estoque_minimo', 'em_falta', 'data_compra') 
+        fields = ('id_movel', 'id_classe', 'id_categoria','id_tipo_movel', 'id_composicao', 'fornecedor', 'id_marca_movel', 'cor', 'estoque_cx', 'valor', 'imposto', 'preco_final', 'valor_estoque_total', 'aplicacao', 'obs', 'estoque_minimo_cx', 'em_falta', 'data_compra') 
     
 movel_share_schema = MovelSchema()
 moveis_share_schema = MovelSchema(many=True)
@@ -646,7 +645,7 @@ class Insumo(Base):
 
 class InsumoSchema(ma.Schema):
     class Meta:
-        fields = ('id_insumo', 'classe', 'categoria','tipo', 'composicao', 'fornecedor', 'marca', 'cor','ref', 'ref_inter', 'qr_code', 'tamanho', 'quantidade_pecas', 'embalagem', 'estoque', 'valor', 'imposto', 'preco_final', 'valor_estoque_total', 'aplicacao', 'obs', 'estoque_minimo', 'em_falta', 'data_compra') 
+        fields = ('id_insumo', 'id_classe', 'id_categoria','id_tipo_insumo', 'id_composicao', 'fornecedor', 'id_marca_insumo', 'cor','ref', 'ref_inter', 'qr_code', 'tamanho_tam', 'quantidade_pecas', 'embalagem', 'estoque', 'valor', 'imposto', 'preco_final', 'valor_estoque_total', 'aplicacao', 'obs', 'estoque_minimo', 'em_falta', 'data_compra') 
     
 insumo_share_schema = InsumoSchema()
 insumos_share_schema = InsumoSchema(many=True)
@@ -680,13 +679,12 @@ class Maquina(Base):
 
     classe = relationship("Classe", back_populates="maquina")
     categoria = relationship("Categoria", back_populates="maquina")
-    composicao = relationship("Composicao", back_populates="maquina")
     tipo_maquina = relationship("Tipo_Maquina", back_populates="maquina")
     marca_maquina = relationship("Marca_Maquina", back_populates="maquina")
 
 class MaquinaSchema(ma.Schema):
     class Meta:
-        fields = ('id_movel', 'classe', 'categoria','tipo', 'composicao', 'fornecedor', 'marca', 'cor', 'estoque', 'valor', 'imposto', 'preco_final', 'valor_estoque_total', 'aplicacao', 'obs', 'estoque_minimo', 'em_falta', 'data_compra') 
+        fields = ('id_maquina', 'id_classe', 'id_categoria','id_tipo_maquina', 'fornecedor', 'id_marca_maquina', 'cor', 'ref', 'ref_inter', 'qr_code', 'estoque', 'valor', 'imposto', 'preco_final', 'valor_estoque_total', 'aplicacao', 'obs', 'estoque_minimo_cx', 'em_falta', 'data_compra') 
     
 maquina_share_schema = MaquinaSchema()
 maquinas_share_schema = MaquinaSchema(many=True)
