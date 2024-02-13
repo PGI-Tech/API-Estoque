@@ -430,7 +430,7 @@ elasticos_share_schema = ElasticoSchema(many=True)
 class Linha(Base):
     __tablename__ = 'linha'
 
-    id_linha = Column(Integer, primary_key=True, index=True, autoincrement=True) 
+    id_linha = Column(Integer, primary_key=True, index=True, autoincrement=True)
     foto = Column(String(length=200), index=True)
     id_categoria = Column(Integer, ForeignKey('categoria.id_categoria')) # sub tabela / lista suspensa / foreign-key
     id_classe = Column(Integer, ForeignKey('classe.id_classe')) # sub tabela / lista suspensa / foreign-key

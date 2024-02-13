@@ -37,6 +37,15 @@ def produtoPagination(current_user, page):
             tecidos = db.query(Tecido).limit(5).offset(skip).all()
             tecido_data = tecidos_share_schema.dump(tecidos)
 
+            for produto in agulha_data:
+                produto['tipo'] = 'Agulha'
+            for produto in elastico_data:
+                produto['tipo'] = 'Elastico'
+            for produto in linha_data:
+                produto['tipo'] = 'Linha'
+            for produto in tecido_data:
+                produto['tipo'] = 'Tecido'
+
             totalProdutos = totalAgulhas + totalElastico + totalTecidos + totalLinhas
 
             if totalProdutos == 0:
