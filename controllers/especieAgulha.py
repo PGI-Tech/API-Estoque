@@ -50,15 +50,15 @@ def NewEspecieAgulha(current_user):
             especie_agulha = request.json['especie_agulha']
 
             # Cria uma nova instância do modelo especie_agulha com os dados
-            newespecie_agulha = especie_agulha(
-                especie_agulha = especie_agulha
+            newespecie_agulha = Especie_Agulha(
+                especie = especie_agulha
             )
 
             db.add(newespecie_agulha)
             db.commit()
 
             return jsonify({"message": "Nova especie_agulha criada com sucesso!",
-                            "especie_agulha": especie_agulha_share_schema.dump(db.query(Especie_Agulha).filter_by(especie_agulha = especie_agulha).first())})
+                            "especie_agulha": especie_agulha_share_schema.dump(db.query(Especie_Agulha).filter_by(especie = especie_agulha).first())})
 
     except Exception as e:
         return str(e), 500

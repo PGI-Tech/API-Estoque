@@ -1,4 +1,5 @@
-"""import os
+import math
+import os
 from app import app
 from flask import Flask, jsonify, request, url_for, redirect
 from config.authenticate import jwt_required
@@ -9,118 +10,55 @@ import socket
 import base64
 from PIL import Image
 
-@app.route('/produtos', methods=['GET'])
+@app.route('/produtos/<int:page>', methods=['GET']) # GET
 @jwt_required
-def produto(current_user):
+def produtoPagination(current_user, page):
     try:
         if request.method == 'GET':
-            produtos = db.query(Produto).all()
-            if (produtos == None) or (len(produtos) == 0):
+            skip = (page - 1) * 5
+
+            # Elastico
+            totalElastico = db.query(Elastico).count()
+            elasticos = db.query(Elastico).limit(5).offset(skip).all()
+            elastico_data = elasticos_share_schema.dump(elasticos)
+
+            # Agulhas
+            totalAgulhas = db.query(Agulha).count()
+            agulhas = db.query(Agulha).limit(5).offset(skip).all()
+            agulha_data = agulhas_share_schema.dump(agulhas)
+
+            # Linha
+            totalLinhas = db.query(Linha).count()
+            linhas = db.query(Linha).limit(5).offset(skip).all()
+            linha_data = linhas_share_schema.dump(linhas)
+            
+            # Tecido
+            totalTecidos = db.query(Tecido).count()
+            tecidos = db.query(Tecido).limit(5).offset(skip).all()
+            tecido_data = tecidos_share_schema.dump(tecidos)
+
+            totalProdutos = totalAgulhas + totalElastico + totalTecidos + totalLinhas
+
+            if totalProdutos == 0:
                 return jsonify({"error": "Não há nenhum dado cadastrado nessa tabela"})
 
-            prod = jsonify(produtos_share_schema.dump(produtos))
-            if prod == []:
-                return jsonify({"error": "Não há nenhum dado cadastrado nessa tabela"})
-            return prod
+            produtos = [agulha_data + elastico_data + linha_data + tecido_data]
+
+            return jsonify({
+                "totalProdutos":  totalProdutos,
+                "itens": 5,
+                "totalPages": math.ceil(totalProdutos / 5),
+                "produtos": produtos
+                
+            })
     
     except Exception as e:
         return str(e), 500
     
 
-@app.route('/produtos/<int:id>', methods=['GET'])
+@app.route('/produtos/qrcode/<int:id>/<string:produto>', methods=['GET']) # QR Code
 @jwt_required
-def produtoID(current_user, id):
-    try:
-        if request.method == 'GET':
-            produtos = db.query(Produto).filter_by(id_produto=id).first()
-            if produtos == None:
-                return jsonify({"error":"O ID informado não consta na tabela de Produtos!"})
-            
-            prod = jsonify(produto_share_schema.dump(produtos))
-            if prod == []:
-                return jsonify({"error":"O ID informado não consta na tabela de Produtos!"})
-            
-            return prod
-
-    except Exception as e:
-        return str(e), 500
-
-
-@app.route('/produtos', methods=['POST'])
-@jwt_required
-def newProduto(current_user):
-    try: 
-        if request.method == 'POST':
-            descricao = request.json['descricao']
-            quantidade = request.json['quantidade']
-            publico = request.json['publico']
-            materia_prima = request.json['materia_prima']
-
-            # Cria uma nova instância do modelo Produto com os dados
-            newProd = Produto(
-                descricao = descricao,
-                quantidade = quantidade,
-                publico = publico,
-                materia_prima = materia_prima
-            )
-
-            db.add(newProd)
-            db.commit()
-
-            return jsonify({"message": "Novo produto criado com sucesso!",
-                            "produto": produto_share_schema.dump(db.query(Produto).filter_by(descricao = descricao).first())})
-    
-    except Exception as e:
-        return str(e), 500
-
-
-@app.route('/produtos/<int:id>', methods=['PUT'])
-@jwt_required
-def editProduto(current_user, id):
-    try:
-       if request.method == 'PUT':
-            produtos = db.query(Produto).filter_by(id_produto=id).first()
-            if produtos == None:
-                return jsonify({"error":"O ID informado não consta na tabela de Produtos!"})
-
-            prod = jsonify(produto_share_schema.dump(produtos))
-            if prod == []:
-                return jsonify({"error":"O ID informado não consta na tabela de Produtos!"})
-
-            db.query(Produto).filter_by(
-                id_produto=id).update(request.json)
-            db.commit()
-
-            return jsonify(produto_share_schema.dump(db.query(Produto).filter_by(id_produto=id).first()))
-
-    except Exception as e:
-        return str(e), 500
-
-
-@app.route('/produtos/<int:id>', methods=['DELETE'])
-@jwt_required
-def deleteProduto(current_user, id):
-    try:
-        if request.method == 'DELETE':
-            produtos = db.query(Produto).filter_by(id_produto=id).first()
-            if produtos == None:
-                return jsonify({"error":"O ID informado não consta na tabela de Produtos!"})
-
-            prod = jsonify(produto_share_schema.dump(produtos))
-            if prod == []:
-                return jsonify({"error":"O ID informado não consta na tabela de Produtos!"})
-
-            db.query(Produto).filter_by(id_produto=id).delete()
-            db.commit()
-
-            return jsonify({"message": f"Produto de ID {id} deletado com sucesso!"})
-
-    except Exception as e:
-        return str(e), 500
-    
-@app.route('/produtos/qrcode/<int:id>', methods=['GET'])
-@jwt_required
-def code(current_user, id):
+def code(current_user, id, produto):
     if request.method == 'GET':
         try:
             # captura o host e a port da aplicação
@@ -128,7 +66,7 @@ def code(current_user, id):
             port = 5000
 
             # cria o código QR como uma imagem e salva na pasta
-            qr_code = qrcode.make(f'http://{host}:{port}/produtos/{id}')
+            qr_code = qrcode.make(f'http://{host}:{port}/produtos/?p={produto}&id={id}')
             qr_code.save('qrcode.png')
 
             # converte a imagem salva como base64
@@ -142,10 +80,10 @@ def code(current_user, id):
 
             # retorna a imagem em base64 como json pro font-end
             return jsonify({
-                "qrcod": imagem_base64
+                "qrcode": imagem_base64
             })
         
         except Exception as e:
             return jsonify({
                 "error":str(e)
-            })"""
+            })

@@ -1,0 +1,14 @@
+Flask Migrate
+1. Iniciar as migrations:
+flask db init
+
+2. Criar uma migration:
+flask db migrate -m "Initial migration." 
+
+3. Aplicar as migrates
+flask db upgrade
+
+--------------------------------------------------
+
+Ativar a virtual enviroment:
+<nomeVenv>\Scripts\activate
