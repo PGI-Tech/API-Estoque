@@ -37,4 +37,4 @@ from controllers.unidade import *
 from controllers.usuarios import *
 
 if __name__ == "__main__":
-    app.run(port=266, host='0.0.0.0', debug=True)
+    app.run(port=266, host='0.0.0.0', debug=True, ssl_context=('cert.pem','key.pem'))
