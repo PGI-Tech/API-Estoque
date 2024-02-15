@@ -12,7 +12,7 @@ CORS(app,
 
 
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:masterkey@localhost/postgres'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:masterkey@192.168.2.101/postgres'
 app.config['SECRET_KEY'] = '659_!si#47sjqc2*r8e2lt6t1u^co^7v1e+pknxy4tim1mu=@c'
 
 db = SQLAlchemy(app)
