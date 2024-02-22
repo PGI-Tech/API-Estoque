@@ -5,7 +5,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from app import *
 
 Base = declarative_base()
-# Criação das Tabelas do Banco de Dados
+# Criacao das Tabelas do Banco de Dados
 
 # Classe
 class Classe(Base):
@@ -20,6 +20,7 @@ class Classe(Base):
     movel = relationship("Movel", back_populates="classe")
     insumo = relationship("Insumo", back_populates="classe")
     maquina = relationship("Maquina", back_populates="classe")
+    pecas_prontas = relationship("PecasProntas", back_populates="classe")
 
 class ClasseSchema(ma.Schema):
     class Meta:
@@ -44,6 +45,7 @@ class Categoria(Base):
     movel = relationship("Movel", back_populates="categoria")
     insumo = relationship("Insumo", back_populates="categoria")
     maquina = relationship("Maquina", back_populates="categoria")
+    pecas_prontas = relationship("PecasProntas", back_populates="categoria")
 
 class CategoriaSchema(ma.Schema):
     class Meta:
@@ -54,8 +56,26 @@ categorias_share_schema = CategoriaSchema(many=True)
 
 
 
+# Peca
+class Peca(Base):
+    __tablename__ = 'peca'
+
+    id_peca = Column(Integer, primary_key=True, index=True, autoincrement=True)  
+    peca = Column(String(length=80), index=True)
+
+    pecasa_prontas = relationship("PecasProntas", back_populates="peca")
+
+class PecaSchema(ma.Schema):
+    class Meta:
+        fields = ('id_peca', 'peca') 
+    
+peca_share_schema = PecaSchema()
+pecas_share_schema = PecaSchema(many=True)
+
+
+
 # Maquina Agulha
-class Maquina_Agulha(Base):
+class MaquinaAgulha(Base):
     __tablename__ = 'maquina_agulha'
 
     id_maquina_agulha = Column(Integer, primary_key=True, index=True, autoincrement=True)  
@@ -73,7 +93,7 @@ maquina_agulhas_share_schema = MaquinaAgulhaSchema(many=True)
 
 
 # Especie Agulha
-class Especie_Agulha(Base):
+class EspecieAgulha(Base):
     __tablename__ = 'especie_agulha'
 
     id_especie_agulha = Column(Integer, primary_key=True, index=True, autoincrement=True)  
@@ -91,7 +111,7 @@ especie_agulhas_share_schema = EspecieAgulhaSchema(many=True)
 
 
 # Marca Agulha
-class Marca_Agulha(Base):
+class MarcaAgulha(Base):
     __tablename__ = 'marca_agulha'
 
     id_marca_agulha = Column(Integer, primary_key=True, index=True, autoincrement=True)  
@@ -109,7 +129,7 @@ marca_agulhas_share_schema = MarcaAgulhaSchema(many=True)
 
 
 # Marca Movel
-class Marca_Movel(Base):
+class MarcaMovel(Base):
     __tablename__ = 'marca_movel'
 
     id_marca_movel = Column(Integer, primary_key=True, index=True, autoincrement=True)  
@@ -127,7 +147,7 @@ marca_moveis_share_schema = MarcaMovelSchema(many=True)
 
 
 # Marca Insumo
-class Marca_Insumo(Base):
+class MarcaInsumo(Base):
     __tablename__ = 'marca_insumo'
 
     id_marca_insumo = Column(Integer, primary_key=True, index=True, autoincrement=True)  
@@ -145,7 +165,7 @@ marca_insumos_share_schema = MarcaInsumoSchema(many=True)
 
 
 # Marca Maquina
-class Marca_Maquina(Base):
+class MarcaMaquina(Base):
     __tablename__ = 'marca_maquina'
 
     id_marca_maquina = Column(Integer, primary_key=True, index=True, autoincrement=True)  
@@ -183,14 +203,14 @@ unidades_share_schema = UnidadeSchema(many=True)
 
 
 
-# Permissões
+# Permissoes
 class Permissao(Base):
     __tablename__ = 'permissao'
 
     id_permissao = Column(Integer, primary_key=True, index=True, autoincrement=True)
     descricao = Column(String(length=100), unique=True, index=True)
 
-    # Relação entre usuário e produtos (um usuário pode ter vários produtos)
+    # Relacao entre usuario e produtos (um usuario pode ter varios produtos)
     usuario = relationship("Usuario", back_populates="permissao")
 
 class PermissaoSchema(ma.Schema):
@@ -202,7 +222,7 @@ permissoes_share_schema = PermissaoSchema(many=True)
 
 
 
-# Usuários
+# Usuarios
 class Usuario(Base):
     __tablename__ = 'usuario'
     id_usuario = Column(Integer, primary_key=True, index=True, autoincrement=True)
@@ -210,7 +230,7 @@ class Usuario(Base):
     senha = Column(String(length=200), unique=False, index=True)
     id_permissao = Column(Integer, ForeignKey('permissao.id_permissao'))
 
-    # Relação inversa entre produtos e usuário
+    # Relacao inversa entre produtos e usuario
     permissao = relationship("Permissao", back_populates="usuario")
 
     def __init__(self, username, senha, id_permissao):
@@ -231,7 +251,7 @@ users_share_schema = UserSchema(many=True)
 
 
 # Tipo Elastico
-class Tipo_Elastico(Base):
+class TipoElastico(Base):
     __tablename__ = 'tipo_elastico'
 
     id_tipo_elastico = Column(Integer, primary_key=True, index=True, autoincrement=True)  
@@ -249,7 +269,7 @@ tipo_elasticos_share_schema = TipoElasticoSchema(many=True)
 
 
 # Tipo Insumo
-class Tipo_Insumo(Base):
+class TipoInsumo(Base):
     __tablename__ = 'tipo_insumo'
 
     id_tipo_insumo = Column(Integer, primary_key=True, index=True, autoincrement=True)  
@@ -267,7 +287,7 @@ tipo_insumos_share_schema = TipoInsumoSchema(many=True)
 
 
 # Tipo Maquina
-class Tipo_Maquina(Base):
+class TipoMaquina(Base):
     __tablename__ = 'tipo_maquina'
 
     id_tipo_maquina = Column(Integer, primary_key=True, index=True, autoincrement=True)  
@@ -285,7 +305,7 @@ tipo_maquinas_share_schema = TipoMaquinaSchema(many=True)
 
 
 # Tipo Movel
-class Tipo_Movel(Base):
+class TipoMovel(Base):
     __tablename__ = 'tipo_movel'
 
     id_tipo_movel = Column(Integer, primary_key=True, index=True, autoincrement=True)  
@@ -325,7 +345,7 @@ composicoes_share_schema = ComposicaoSchema(many=True)
 
 
 # Marca Elastico
-class Marca_Elastico(Base):
+class MarcaElastico(Base):
     __tablename__ = 'marca_elastico'
 
     id_marca_elastico = Column(Integer, primary_key=True, index=True, autoincrement=True)  
@@ -343,7 +363,7 @@ marca_elasticos_share_schema = MarcaElasticoSchema(many=True)
 
 
 # Tipo Linha
-class Tipo_Linha(Base):
+class TipoLinha(Base):
     __tablename__ = 'tipo_linha'
 
     id_tipo_linha = Column(Integer, primary_key=True, index=True, autoincrement=True)  
@@ -396,30 +416,30 @@ class Elastico(Base):
     ref = Column(String(length=100), index=True)
     ref_inter = Column(String(length=100), index=True)
     qr_code = Column(String(length=200), index=True)
-    largura_mm = Column(Integer, index=True)
-    embalagem_m = Column(Integer, ForeignKey('embalagem.id_embalagem')) # sub tabela / foreign-key
+    largura = Column(Integer, index=True)
+    embalagem = Column(Integer, ForeignKey('embalagem.id_embalagem')) # sub tabela / foreign-key
     id_unidade = Column(Integer, ForeignKey('unidade.id_unidade')) # sub tabela / foreign-key
-    estoque_rolo = Column(Integer, index=True)
+    estoque = Column(Integer, index=True)
     valor = Column(Integer, index=True)
     imposto = Column(Integer, index=True)
     preco_final = Column(Integer, index=True)
     valor_estoque_total = Column(Integer, index=True)
     aplicacao = Column(String(length=100), index=True)
     obs = Column(String(length=100), index=True)
-    estoque_minimo_rolo = Column(Integer, index=True)
+    estoque_minimo = Column(Integer, index=True)
     em_falta = Column(String(length=3), index=True)
     data_compra = Column(Date, index=True)
 
     categoria = relationship("Categoria", back_populates="elastico")
-    tipo_elastico = relationship("Tipo_Elastico", back_populates="elastico")
+    tipo_elastico = relationship("TipoElastico", back_populates="elastico")
     composicao = relationship("Composicao", back_populates="elastico")
-    marca_elastico = relationship("Marca_Elastico", back_populates="elastico")
+    marca_elastico = relationship("MarcaElastico", back_populates="elastico")
     unidade = relationship("Unidade", back_populates="elastico")
     embalagem = relationship("Embalagem", back_populates="elastico")
 
 class ElasticoSchema(ma.Schema):
     class Meta:
-        fields = ('id_elastico', 'foto', 'id_categoria', 'id_tipo_elastico', 'nome', 'id_composicao', 'fornecedor', 'id_marca_elastico', 'cor', 'ref', 'ref_inter', 'qr_code', 'largura_mm', 'embalagem_m', 'id_unidade', 'estoque_rolo', 'valor', 'imposto', 'preco_final', 'valor_estoque_total', 'aplicacao', 'obs', 'estoque_minimo_rolo', 'em_falta', 'data_compra')
+        fields = ('id_elastico', 'foto', 'id_categoria', 'id_tipo_elastico', 'nome', 'id_composicao', 'fornecedor', 'id_marca_elastico', 'cor', 'ref', 'ref_inter', 'qr_code', 'largura', 'embalagem', 'id_unidade', 'estoque', 'valor', 'imposto', 'preco_final', 'valor_estoque_total', 'aplicacao', 'obs', 'estoque_minimo', 'em_falta', 'data_compra')
 
 elastico_share_schema = ElasticoSchema()
 elasticos_share_schema = ElasticoSchema(many=True)
@@ -442,30 +462,30 @@ class Linha(Base):
     ref = Column(String(length=100), index=True)
     num_pedido = Column(Integer, index=True)
     qr_code = Column(String(length=200), index=True)
-    tamanho_jardas = Column(Integer, index=True)
-    quantidade_pecas_cone = Column(Integer, index=True)
+    tamanho = Column(String(length=80), index=True)
+    quantidade = Column(Integer, index=True)
     id_unidade = Column(Integer, ForeignKey('unidade.id_unidade')) # sub tabela / foreign-key
     id_embalagem = Column(Integer, ForeignKey('embalagem.id_embalagem')) # sub tabela / foreign-key
-    estoque_cone = Column(Integer, index=True)
+    estoque = Column(Integer, index=True)
     valor = Column(Integer, index=True)
     imposto = Column(Integer, index=True)
     preco_final = Column(Integer, index=True)
     valor_estoque_total = Column(Integer, index=True)
     obs = Column(String(length=100), index=True)
-    estoque_minimo_cone = Column(Integer, index=True)
+    estoque_minimo = Column(Integer, index=True)
     em_falta = Column(String(length=3), index=True)
     data_compra = Column(Date, index=True)
 
     categoria = relationship("Categoria", back_populates="linha")
     classe = relationship("Classe", back_populates="linha")
-    tipo_linha = relationship("Tipo_Linha", back_populates="linha")
+    tipo_linha = relationship("TipoLinha", back_populates="linha")
     composicao = relationship("Composicao", back_populates="linha")
     unidade = relationship("Unidade", back_populates="linha")
     embalagem = relationship("Embalagem", back_populates="linha")
 
 class LinhaSchema(ma.Schema):
     class Meta:
-        fields = ('id_linha', 'foto', 'id_categoria', 'id_classe', 'id_tipo_linha', 'id_composicao', 'fornecedor', 'marca_linha', 'cor', 'ref', 'num_pedido', 'qr_code', 'tamanho_jardas', 'quantidade_pecas_cone', 'id_unidade', 'id_embalagem', 'estoque_cone', 'valor', 'imposto', 'preco_final', 'valor_estoque_total', 'obs', 'estoque_minimo_cone', 'em_falta', 'data_compra')
+        fields = ('id_linha', 'foto', 'id_categoria', 'id_classe', 'id_tipo_linha', 'id_composicao', 'fornecedor', 'marca_linha', 'cor', 'ref', 'num_pedido', 'qr_code', 'tamanho', 'quantidade', 'id_unidade', 'id_embalagem', 'estoque', 'valor', 'imposto', 'preco_final', 'valor_estoque_total', 'obs', 'estoque_minimo', 'em_falta', 'data_compra')
 
 linha_share_schema = ElasticoSchema()
 linhas_share_schema = ElasticoSchema(many=True)
@@ -493,21 +513,21 @@ class Tecido(Base):
     qr_code = Column(String(length=200), index=True)
     ramado = Column(String(length=3), index=True)
     plano = Column(String(length=3), index=True)
-    largura_m = Column(Integer, index=True)
-    gramatura_gm2 = Column(Integer, index=True)
+    largura = Column(Integer, index=True)
+    gramatura = Column(Integer, index=True)
     id_unidade = Column(Integer, ForeignKey('unidade.id_unidade')) # sub tabela / foreign-key
-    rendimento_mkg = Column(Integer, index=True)
-    tamanho_kg = Column(Integer, index=True)
-    qantidade_peca = Column(Integer, index=True)
+    rendimento = Column(Integer, index=True)
+    tamanho = Column(String(length=80), index=True)
+    qantidade = Column(Integer, index=True)
     id_embalagem = Column(Integer, ForeignKey('embalagem.id_embalagem')) # sub tabela / foreign-key
-    estoque_kg = Column(Integer, index=True)
+    estoque = Column(Integer, index=True)
     valor = Column(Integer, index=True)
     imposto = Column(Integer, index=True)
     preco_final = Column(Integer, index=True)
     valor_estoque_total = Column(Integer, index=True)
     aplicacao = Column(String(length=100), index=True)
     obs = Column(String(length=100), index=True)
-    estoque_minimo_kg = Column(Integer, index=True)
+    estoque_minimo = Column(Integer, index=True)
     em_falta = Column(String(length=3), index=True)
     data_compra = Column(Date, index=True)
 
@@ -519,7 +539,7 @@ class Tecido(Base):
 
 class TecidoSchema(ma.Schema):
     class Meta:
-        fields = ('id_tecido', 'foto', 'id_categoria', 'id_classe', 'tipo_tecido', 'id_composicao', 'fornecedor', 'marca_linha', 'importado', 'estampado', 'cor', 'estampa', 'ref', 'num_pedido', 'qr_code', 'ramado', 'plano', 'largura_m', 'gramatura_gm2', 'id_unidade', 'rendimento_mkg', 'tamanho_kg', 'qantidade_peca', 'id_embalagem', 'estoque_kg', 'valor', 'imposto', 'preco_final', 'valor_estoque_total', 'aplicacao', 'obs', 'estoque_minimo_kg', 'em_falta', 'data_compra')
+        fields = ('id_tecido', 'foto', 'id_categoria', 'id_classe', 'tipo_tecido', 'id_composicao', 'fornecedor', 'marca_linha', 'importado', 'estampado', 'cor', 'estampa', 'ref', 'num_pedido', 'qr_code', 'ramado', 'plano', 'largura', 'gramatura', 'id_unidade', 'rendimento', 'tamanho', 'qantidade', 'id_embalagem', 'estoque', 'valor', 'imposto', 'preco_final', 'valor_estoque_total', 'aplicacao', 'obs', 'estoque_minimo', 'em_falta', 'data_compra')
 
 tecido_share_schema = TecidoSchema()
 tecidos_share_schema = TecidoSchema(many=True)
@@ -541,8 +561,8 @@ class Agulha(Base):
     ref = Column(String(length=100), index=True)
     num_pedido = Column(Integer, index=True)
     qr_code = Column(String(length=200), index=True)
-    tamanho_tam = Column(Integer, index=True)
-    estoque_cx = Column(Integer, index=True)
+    tamanho = Column(String(length=80), index=True)
+    estoque = Column(Integer, index=True)
     id_unidade = Column(Integer, ForeignKey('unidade.id_unidade')) # sub tabela / foreign-key
     valor = Column(Integer, index=True)
     imposto = Column(Integer, index=True)
@@ -550,20 +570,20 @@ class Agulha(Base):
     valor_estoque_total = Column(Integer, index=True)
     aplicacao = Column(String(length=100), index=True)
     obs = Column(String(length=100), index=True)
-    estoque_minimo_cx = Column(Integer, index=True)
+    estoque_minimo = Column(Integer, index=True)
     em_falta = Column(String(length=3), index=True)
     data_compra = Column(Date, index=True)
 
     classe = relationship("Classe", back_populates="agulha")
     categoria = relationship("Categoria", back_populates="agulha")
-    maquina_agulha = relationship("Maquina_Agulha", back_populates="agulha")
-    especie_agulha = relationship("Especie_Agulha", back_populates="agulha")
-    marca_agulha = relationship("Marca_Agulha", back_populates="agulha")
+    maquina_agulha = relationship("MaquinaAgulha", back_populates="agulha")
+    especie_agulha = relationship("EspecieAgulha", back_populates="agulha")
+    marca_agulha = relationship("MarcaAgulha", back_populates="agulha")
     unidade = relationship("Unidade", back_populates="agulha")
 
 class AgulhaSchema(ma.Schema):
     class Meta:
-        fields = ('id_agulha', 'id_classe', 'foto', 'id_categoria', 'id_maquina_agulha', 'id_especie_agulha', 'fornecedor', 'id_marca_agulha', 'ref', 'num_pedido', 'qr_code', 'tamanho_tam', 'estoque_cx', 'id_unidade', 'valor', 'imposto', 'preco_final', 'valor_estoque_total', 'aplicacao', 'obs', 'estoque_minimo_cx', 'em_falta', 'data_compra') 
+        fields = ('id_agulha', 'id_classe', 'foto', 'id_categoria', 'id_maquina_agulha', 'id_especie_agulha', 'fornecedor', 'id_marca_agulha', 'ref', 'num_pedido', 'qr_code', 'tamanho', 'estoque', 'id_unidade', 'valor', 'imposto', 'preco_final', 'valor_estoque_total', 'aplicacao', 'obs', 'estoque_minimo', 'em_falta', 'data_compra') 
     
 agulha_share_schema = AgulhaSchema()
 agulhas_share_schema = AgulhaSchema(many=True)
@@ -582,26 +602,26 @@ class Movel(Base):
     fornecedor = Column(String(length=80), index=True)
     id_marca_movel = Column(Integer, ForeignKey('marca_movel.id_marca_movel'))
     cor = Column(String(length=80), index=True)
-    estoque_cx = Column(Integer, index=True)
+    estoque = Column(Integer, index=True)
     valor = Column(Integer, index=True)
     imposto = Column(Integer, index=True)
     preco_final = Column(Integer, index=True)
     valor_estoque_total = Column(Integer, index=True)
     aplicacao = Column(String(length=100), index=True)
     obs = Column(String(length=100), index=True)
-    estoque_minimo_cx = Column(Integer, index=True)
+    estoque_minimo = Column(Integer, index=True)
     em_falta = Column(String(length=3), index=True)
     data_compra = Column(Date, index=True)
 
     classe = relationship("Classe", back_populates="movel")
     categoria = relationship("Categoria", back_populates="movel")
     composicao = relationship("Composicao", back_populates="movel")
-    tipo_movel = relationship("Tipo_Movel", back_populates="movel")
-    marca_movel = relationship("Marca_Movel", back_populates="movel")
+    tipo_movel = relationship("TipoMovel", back_populates="movel")
+    marca_movel = relationship("MarcaMovel", back_populates="movel")
 
 class MovelSchema(ma.Schema):
     class Meta:
-        fields = ('id_movel', 'id_classe', 'id_categoria','id_tipo_movel', 'id_composicao', 'fornecedor', 'id_marca_movel', 'cor', 'estoque_cx', 'valor', 'imposto', 'preco_final', 'valor_estoque_total', 'aplicacao', 'obs', 'estoque_minimo_cx', 'em_falta', 'data_compra') 
+        fields = ('id_movel', 'id_classe', 'id_categoria','id_tipo_movel', 'id_composicao', 'fornecedor', 'id_marca_movel', 'cor', 'estoque', 'valor', 'imposto', 'preco_final', 'valor_estoque_total', 'aplicacao', 'obs', 'estoque_minimo', 'em_falta', 'data_compra') 
     
 movel_share_schema = MovelSchema()
 moveis_share_schema = MovelSchema(many=True)
@@ -623,8 +643,9 @@ class Insumo(Base):
     ref = Column(String(length=100), index=True)
     ref_inter = Column(String(length=100), index=True)
     qr_code = Column(String(length=200), index=True)
-    tamanho_tam = Column(String(length=80), index=True)
-    quantidade_pecas = Column(Integer, index=True)
+    tamanho = Column(String(length=80), index=True)
+    id_unidade = Column(Integer, ForeignKey('unidade.id_unidade')) # sub tabela / foreign-key
+    quantidade = Column(Integer, index=True)
     embalagem = Column(String(length=80), index=True)
     estoque = Column(String(length=80), index=True)
     valor = Column(Integer, index=True)
@@ -640,12 +661,13 @@ class Insumo(Base):
     classe = relationship("Classe", back_populates="insumo")
     categoria = relationship("Categoria", back_populates="insumo")
     composicao = relationship("Composicao", back_populates="insumo")
-    tipo_insumo = relationship("Tipo_Insumo", back_populates="insumo")
-    marca_insumo = relationship("Marca_Insumo", back_populates="insumo")
+    tipo_insumo = relationship("TipoInsumo", back_populates="insumo")
+    marca_insumo = relationship("MarcaInsumo", back_populates="insumo")
+    unidade = relationship("Unidade", back_populates="insumo")
 
 class InsumoSchema(ma.Schema):
     class Meta:
-        fields = ('id_insumo', 'id_classe', 'id_categoria','id_tipo_insumo', 'id_composicao', 'fornecedor', 'id_marca_insumo', 'cor','ref', 'ref_inter', 'qr_code', 'tamanho_tam', 'quantidade_pecas', 'embalagem', 'estoque', 'valor', 'imposto', 'preco_final', 'valor_estoque_total', 'aplicacao', 'obs', 'estoque_minimo', 'em_falta', 'data_compra') 
+        fields = ('id_insumo', 'id_classe', 'id_categoria','id_tipo_insumo', 'id_composicao', 'fornecedor', 'id_marca_insumo', 'cor','ref', 'ref_inter', 'qr_code', 'tamanho', 'quantidade', 'embalagem', 'estoque', 'valor', 'imposto', 'preco_final', 'valor_estoque_total', 'aplicacao', 'obs', 'estoque_minimo', 'em_falta', 'data_compra') 
     
 insumo_share_schema = InsumoSchema()
 insumos_share_schema = InsumoSchema(many=True)
@@ -673,21 +695,63 @@ class Maquina(Base):
     valor_estoque_total = Column(Integer, index=True)
     aplicacao = Column(String(length=100), index=True)
     obs = Column(String(length=100), index=True)
-    estoque_minimo_cx = Column(Integer, index=True)
+    estoque_minimo = Column(Integer, index=True)
     em_falta = Column(String(length=3), index=True)
     data_compra = Column(Date, index=True)
 
     classe = relationship("Classe", back_populates="maquina")
     categoria = relationship("Categoria", back_populates="maquina")
-    tipo_maquina = relationship("Tipo_Maquina", back_populates="maquina")
-    marca_maquina = relationship("Marca_Maquina", back_populates="maquina")
+    tipo_maquina = relationship("TipoMaquina", back_populates="maquina")
+    marca_maquina = relationship("MarcaMaquina", back_populates="maquina")
 
 class MaquinaSchema(ma.Schema):
     class Meta:
-        fields = ('id_maquina', 'id_classe', 'id_categoria','id_tipo_maquina', 'fornecedor', 'id_marca_maquina', 'cor', 'ref', 'ref_inter', 'qr_code', 'estoque', 'valor', 'imposto', 'preco_final', 'valor_estoque_total', 'aplicacao', 'obs', 'estoque_minimo_cx', 'em_falta', 'data_compra') 
+        fields = ('id_maquina', 'id_classe', 'id_categoria','id_tipo_maquina', 'fornecedor', 'id_marca_maquina', 'cor', 'ref', 'ref_inter', 'qr_code', 'estoque', 'valor', 'imposto', 'preco_final', 'valor_estoque_total', 'aplicacao', 'obs', 'estoque_minimo', 'em_falta', 'data_compra') 
     
 maquina_share_schema = MaquinaSchema()
 maquinas_share_schema = MaquinaSchema(many=True)
+
+
+
+# Pecas Prontas
+class PecasProntas(Base):
+    __tablename__ = 'pecas_prontas'
+
+    id_pecas_prontas = Column(Integer, primary_key=True, index=True, autoincrement=True) 
+    id_classe = Column(Integer, ForeignKey('classe.id_classe')) # sub tabela / lista suspensa / foreign-key
+    id_categoria = Column(Integer, ForeignKey('categoria.id_categoria')) # sub tabela / lista suspensa / foreign-key
+    id_peca = Column(Integer, ForeignKey('tipo_maquina.id_tipo_maquina'))
+    id_tecido = Column(Integer, ForeignKey('marca_maquina.id_marca_maquina'))
+    fornecedor = Column(String(length=80), index=True)
+    cor = Column(String(length=80), index=True)
+    estampa = Column(String(length=3), index=True)
+    modelo = Column(String(length=80), index=True)
+    ref = Column(String(length=100), index=True)
+    detalhe = Column(String(length=100), index=True)
+    cor_detalhe = Column(String(length=80), index=True)
+    tamanho = Column(String(length=80), index=True)
+    id_unidade = Column(Integer, ForeignKey('unidade.id_unidade')) # sub tabela / foreign-key
+    marca = Column(String(length=80), index=True)
+    estoque = Column(String(length=80), index=True)
+    valor = Column(Integer, index=True)
+    valor_estoque_total = Column(Integer, index=True)
+    obs = Column(String(length=100), index=True)
+    estoque_minimo = Column(Integer, index=True)
+    em_falta = Column(String(length=3), index=True)
+    data_compra = Column(Date, index=True)
+
+    classe = relationship("Classe", back_populates="maquina")
+    categoria = relationship("Categoria", back_populates="maquina")
+    tecido = relationship("Tecido", back_populates="maquina")
+    peca = relationship("Peca", back_populates="maquina")
+    unidade = relationship("Unidade", back_populates="agulha")
+
+class PecasProntasSchema(ma.Schema):
+    class Meta:
+        fields = ('id_pecas_prontas', 'id_classe', 'id_categoria','id_peca', 'id_tecido', 'fornecedor', 'cor', 'estampa', 'modelo', 'ref', 'detalhe', 'cor_detalhe', 'tamanho', 'id_unidade', 'marca', 'estoque', 'valor', 'valor_estoque_total','obs', 'estoque_minimo', 'em_falta', 'data_compra') 
+    
+pecas_pronta_share_schema = PecasProntasSchema()
+pecas_prontas_share_schema = PecasProntasSchema(many=True)
 
 
 
@@ -697,6 +761,8 @@ engine = create_engine(app.config['SQLALCHEMY_DATABASE_URI'])
 # Crie as tabelas no banco de dados
 Base.metadata.create_all(bind=engine)
 
-# Criar uma sessão para interagir com o banco de dados
+# Criar uma sessao para interagir com o banco de dados
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 db = SessionLocal()
+db.commit()
+db.flush()
