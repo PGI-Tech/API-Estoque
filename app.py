@@ -3,7 +3,6 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_marshmallow import Marshmallow
 from flask_cors import CORS
-import os
 
 app = Flask(__name__)
 CORS(app, 
@@ -13,7 +12,7 @@ CORS(app,
 
 
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:masterkey@localhost/postgres'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:masterkey@localhost/estoque'
 app.config['SECRET_KEY'] = '659_!si#47sjqc2*r8e2lt6t1u^co^7v1e+pknxy4tim1mu=@c'
 
 db = SQLAlchemy(app)
@@ -37,4 +36,4 @@ from controllers.unidade import *
 from controllers.usuarios import *
 
 if __name__ == "__main__":
-    app.run(port=266, host='0.0.0.0', debug=True, ssl_context=('cert.pem','key.pem'))
+    app.run(port=266, host='0.0.0.0', ssl_context=('cert.pem','key.pem'))
