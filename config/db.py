@@ -66,7 +66,7 @@ class Peca(Base):
     id_peca = Column(Integer, primary_key=True, index=True, autoincrement=True)  
     peca = Column(String(length=80), index=True)
 
-    pecasa_prontas = relationship("PecasProntas", back_populates="peca")
+    pecas_prontas = relationship("PecasProntas", back_populates="peca")
     costura = relationship("Costura", back_populates="peca")
     corte = relationship("Corte", back_populates="peca")
 
@@ -196,14 +196,16 @@ class Unidade(Base):
     sigla = Column(String(length=20), index=True)
 
     agulha = relationship("Agulha", back_populates="unidade")
+    costura = relationship("Costura", back_populates="unidade")
     elastico = relationship("Elastico", back_populates="unidade")
     linha = relationship("Linha", back_populates="unidade")
     tecido = relationship("Tecido", back_populates="unidade")
     pecas_prontas = relationship("PecasProntas", back_populates="unidade")
+    insumo = relationship("Insumo", back_populates="unidade")
 
 class UnidadeSchema(ma.Schema):
     class Meta:
-        fields = ('id_unidade', 'unidade') 
+        fields = ('id_unidade', 'unidade', 'sigla') 
     
 unidade_share_schema = UnidadeSchema()
 unidades_share_schema = UnidadeSchema(many=True)
@@ -424,7 +426,7 @@ class Elastico(Base):
     ref_inter = Column(String(length=100), index=True)
     qr_code = Column(String(length=200), index=True)
     largura = Column(Integer, index=True)
-    embalagem = Column(Integer, ForeignKey('embalagem.id_embalagem')) # sub tabela / foreign-key
+    id_embalagem = Column(Integer, ForeignKey('embalagem.id_embalagem')) # sub tabela / foreign-key
     id_unidade = Column(Integer, ForeignKey('unidade.id_unidade')) # sub tabela / foreign-key
     estoque = Column(Integer, index=True)
     valor = Column(Integer, index=True)
